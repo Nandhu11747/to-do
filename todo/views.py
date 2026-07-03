@@ -64,9 +64,16 @@ def complete_task(request, id):
 
 def signup(request):
     if request.method == "POST":
+        
         username = request.POST.get("username")
         email = request.POST.get("email")
         password = request.POST.get("password")
+        confirm_password = request.POST.get("confirm_password")
+
+        if password != confirm_password:
+            return render(request, "todo/signup.html", {
+                "error": "Passwords do not match."
+            })
 
         if User.objects.filter(username=username).exists():
             return render(request, "todo/signup.html", {
