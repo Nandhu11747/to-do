@@ -11,4 +11,12 @@ urlpatterns = [
     path("delete/<int:id>/", views.delete_task, name="delete_task"),
     
     path("complete/<int:id>/", views.complete_task, name="complete_task"),
+
+    #Authentication URLs
+
+    path("signup/", views.signup, name="signup"),
+
+    path("login/", views.login_view, name="login"),
+    
+    path("logout/", views.logout_view, name="logout"),
 ]   
