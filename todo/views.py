@@ -9,36 +9,55 @@ from .forms import TaskForm
 @login_required
 def home(request):
 
-    tasks = Task.objects.filter(user=request.user).order_by("-created_at")
+    if request.user.is_superuser:
+        tasks = Task.objects.filter(
+            created_by=request.user
+        ).order_by("-created_at")
+    else:
+        tasks = Task.objects.filter(
+            assigned_to=request.user
+        ).order_by("-created_at")
 
     return render(request, "todo/home.html", {"tasks": tasks})
+
 
 @login_required
 def add_task(request):
 
     if request.method == "POST":
-
         form = TaskForm(request.POST)
-
-        if form.is_valid():
-            task = form.save(commit=False)
-
-            task.user = request.user
-
-            task.save()
-
-            return redirect("home")
-
     else:
-
         form = TaskForm()
 
-    return render(request, "todo/add_task.html", {"form": form})
+    if not request.user.is_superuser:
+        form.fields.pop("assigned_to", None)
+
+    if request.method == "POST" and form.is_valid():
+
+        task = form.save(commit=False)
+        task.created_by = request.user
+
+        if not request.user.is_superuser:
+            task.assigned_to = request.user
+
+        task.save()
+        return redirect("home")
+
+    return render(request, "todo/add_task.html", {
+        "form": form
+    })
+
 
 @login_required
 def edit_task(request, task_id):
 
-    task = get_object_or_404(Task, id=task_id, user=request.user)
+    if request.user.is_superuser:
+        task = get_object_or_404(Task, id=task_id)
+    else:
+        task = get_object_or_404(
+            Task, 
+            id=task_id, 
+            assigned_to=request.user)
 
     if request.method == "POST":
 
@@ -55,14 +74,36 @@ def edit_task(request, task_id):
     return render(request, "todo/edit_task.html", {"form": form})
 
 @login_required
-def delete_task(request, id):
-    task = get_object_or_404(Task, id=id, user=request.user)
+def delete_task(request,task_id):
+    
+    if request.user.is_superuser:
+        task = get_object_or_404(Task, id=task_id)
+    else:
+        task = get_object_or_404(
+            Task, 
+            id=task_id, 
+            assigned_to=request.user
+        )
+    
+        if task.created_by != request.user:
+            return redirect("home")
+        
+
     task.delete()
     return redirect("home")
 
 @login_required
-def complete_task(request, id):
-    task = get_object_or_404(Task, id=id, user=request.user)
+def complete_task(request, task_id):
+    
+    if request.user.is_superuser:
+        task = get_object_or_404(Task, id=task_id)
+    else:
+        task = get_object_or_404(
+            Task, 
+            id=task_id, 
+            assigned_to=request.user)
+
+
     task.completed = not task.completed
     task.save()
     return redirect("home")

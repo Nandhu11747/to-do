@@ -7,4 +7,9 @@ class TaskForm(forms.ModelForm):
     class Meta:
         model = Task
 
-        fields = "__all__"
+        fields = [
+            "title",
+            "description",
+            "assigned_to",
+            "completed"
+        ]

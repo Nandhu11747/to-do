@@ -3,14 +3,13 @@ from django.contrib.auth.models import User
 
 class Task(models.Model):
 
-    user = models.ForeignKey(
-        User,
-        on_delete=models.CASCADE
-    )
-
     title = models.CharField(max_length=200)
 
     description = models.TextField(blank=True)
+
+    assigned_to = models.ForeignKey(User, on_delete=models.CASCADE, related_name="assigned_tasks")
+
+    created_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name="created_tasks")
 
     completed = models.BooleanField(default=False)
 
