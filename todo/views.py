@@ -2,13 +2,14 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import render, redirect
+from django.shortcuts import get_object_or_404
 from .models import Task
 from .forms import TaskForm
 
 @login_required
 def home(request):
 
-    tasks = Task.objects.all()
+    tasks = Task.objects.filter(user=request.user).order_by("-created_at")
 
     return render(request, "todo/home.html", {"tasks": tasks})
 
@@ -20,7 +21,12 @@ def add_task(request):
         form = TaskForm(request.POST)
 
         if form.is_valid():
-            form.save()
+            task = form.save(commit=False)
+
+            task.user = request.user
+
+            task.save()
+
             return redirect("home")
 
     else:
@@ -32,7 +38,7 @@ def add_task(request):
 @login_required
 def edit_task(request, task_id):
 
-    task = Task.objects.get(id=task_id)
+    task = get_object_or_404(Task, id=task_id, user=request.user)
 
     if request.method == "POST":
 
@@ -50,13 +56,13 @@ def edit_task(request, task_id):
 
 @login_required
 def delete_task(request, id):
-    task = Task.objects.get(id=id)
+    task = get_object_or_404(Task, id=id, user=request.user)
     task.delete()
     return redirect("home")
 
 @login_required
 def complete_task(request, id):
-    task = Task.objects.get(id=id)
+    task = get_object_or_404(Task, id=id, user=request.user)
     task.completed = not task.completed
     task.save()
     return redirect("home")
