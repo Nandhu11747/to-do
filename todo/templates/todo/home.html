@@ -150,21 +150,31 @@
                         {{ task.created_at|date:"d M Y . h:i A"}}
                     </small>
 
-                    {% if task.days_left > 0 %}
 
-                    <span class="badge bg-info">
-                        {{ task.days_left }} day{{ task.days_left|pluralize }} left
-                    </span>
+                    {% if not task.completed %}
 
-                    {% elif task.days_left == 0 %}
-                        <span class="badge bg-warning text-dark">
-                            Due today
+                        {% if task.days_left > 0 %}
+
+                        <span class="badge bg-info">
+                            {{ task.days_left }} day{{ task.days_left|pluralize }} left
                         </span>
+
+                        {% elif task.days_left == 0 %}
+                            <span class="badge bg-warning text-dark">
+                                Due today
+                            </span>
+                        {% else %}
+                            <span class="badge bg-danger">
+                                {{ task.overdue_days }} day{{ task.overdue_days|pluralize }} overdue
+                            </span>
+                        {% endif %}
+
                     {% else %}
-                        <span class="badge bg-danger">
-                            {{ task.overdue_days }} day{{ task.overdue_days|pluralize }} overdue
-                        </span>
-                        
+                            <span class="badge bg-success">
+                                <i class="bi bi-check-circle-fill"></i>
+                                Completed
+                            </span>
+
                     {% endif %}
 
                 </div>

@@ -91,15 +91,18 @@ def edit_task(request, task_id):
     if request.method == "POST":
 
         form = TaskForm(request.POST, instance=task)
-
-        if form.is_valid():
-            form.save()
-            return redirect("home")
-
     else:
-
         form = TaskForm(instance=task)
 
+    if not request.user.is_superuser:
+        form.fields.pop("assigned_to", None)
+
+    if form.is_valid():
+        form.save()
+        return redirect("home")
+    else:
+        print(form.errors)
+    
     return render(request, "todo/edit_task.html", {"form": form})
 
 @login_required

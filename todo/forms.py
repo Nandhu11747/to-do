@@ -39,7 +39,4 @@ class TaskForm(forms.ModelForm):
             }),
         }
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-
-        self.fields["due_date"].input_formats = ["%d/%m/%Y"]
+    
