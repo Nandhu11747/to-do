@@ -60,6 +60,43 @@
         
     </div>
 
+<div class="row mb-4">
+
+    <div class="col-md-8">
+
+        <form method="GET">
+
+            <div class="input-group">
+
+                <span class="input-group-text">
+                    <i class="bi bi-search"></i>
+                </span>
+
+                <input
+                    type="text"
+                    class="form-control"
+                    name="q"
+                    placeholder="Search by title or description..."
+                    value="{{ query }}">
+
+                <button class="btn btn-primary">
+                    Search
+                </button>
+
+                {% if query %}
+                    <a href="{% url 'home' %}" class="btn btn-outline-secondary">
+                        Clear
+                    </a>
+                {% endif %}
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
     {% for task in tasks %}
 
     <div class="card mb-3 shadow-sm">
@@ -81,6 +118,18 @@
                     <p class="text-muted">
                         {{ task.description }}
                     </p>
+
+                    {% if request.user.is_superuser %}
+                        <small class="text-primary">
+                            <strong>Assigned to:</strong> {{ task.assigned_to.username }}
+                        </small>
+                        <br>
+                        
+                        <small class="text-info">
+                            <strong>Created by:</strong> {{ task.created_by.username }}
+                        </small>
+                        <br>
+                    {% endif %}
 
                     <small class="text-secondary">
                         Created:

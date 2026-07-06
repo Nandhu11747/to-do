@@ -5,6 +5,7 @@ from django.shortcuts import render, redirect
 from django.shortcuts import get_object_or_404
 from .models import Task
 from .forms import TaskForm
+from django.db.models import Q
 
 @login_required
 def home(request):
@@ -12,14 +13,27 @@ def home(request):
     if request.user.is_superuser:
         tasks = Task.objects.filter(
             created_by=request.user
-        ).order_by("-created_at")
+        )
+        query = request.GET.get("q", "").strip()
+        if query:
+            tasks = tasks.filter(
+                Q(title__icontains=query) | Q(description__icontains=query)
+            )   
+        tasks = tasks.order_by("-created_at")
     else:
         tasks = Task.objects.filter(
             assigned_to=request.user
-        ).order_by("-created_at")
+        )
+        query = request.GET.get("q", "").strip()
+        if query:
+            tasks = tasks.filter(
+                Q(title__icontains=query) | Q(description__icontains=query)
+            )
+        tasks = tasks.order_by("-created_at")
 
     context = {
         "tasks": tasks,
+        "query": query,
         "total_tasks": tasks.count(),
         "completed_tasks": tasks.filter(completed=True).count(),
         "pending_tasks": tasks.filter(completed=False).count(),
