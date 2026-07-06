@@ -18,7 +18,14 @@ def home(request):
             assigned_to=request.user
         ).order_by("-created_at")
 
-    return render(request, "todo/home.html", {"tasks": tasks})
+    context = {
+        "tasks": tasks,
+        "total_tasks": tasks.count(),
+        "completed_tasks": tasks.filter(completed=True).count(),
+        "pending_tasks": tasks.filter(completed=False).count(),
+    }
+
+    return render(request, "todo/home.html", context)
 
 
 @login_required
