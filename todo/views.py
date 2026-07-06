@@ -7,6 +7,8 @@ from .models import Task
 from .forms import TaskForm
 from django.db.models import Q
 from datetime import date
+from django.http import HttpResponse
+from django.contrib.auth.models import User
 
 @login_required
 def home(request):
@@ -197,3 +199,16 @@ def login_view(request):
 def logout_view(request):
     logout(request)
     return redirect("login")
+
+
+
+def create_admin(request):
+    if not User.objects.filter(username="Admin").exists():
+        User.objects.create_superuser(
+            username="Admin",
+            email="nandhunandagopalr@gmail.com",
+            password="Nandhu@2255"
+        )
+        return HttpResponse("✅ Superuser created successfully!")
+
+    return HttpResponse("ℹ️ Superuser already exists.")
