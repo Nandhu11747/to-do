@@ -29,10 +29,14 @@ class TaskForm(forms.ModelForm):
                 "class": "form-select"
             }),
 
-            "due_date": forms.DateInput(attrs={
-                "class": "form-control",
-                "id": "due_date"
-            }),
+            "due_date": forms.DateInput(
+                format="%Y-%m-%d",
+                attrs={
+                    "class": "form-control",
+                    "type": "date"
+                }
+            ),
+
 
             "completed": forms.CheckboxInput(attrs={
                 "class": "form-check-input"
