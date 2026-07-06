@@ -6,6 +6,7 @@ from django.shortcuts import get_object_or_404
 from .models import Task
 from .forms import TaskForm
 from django.db.models import Q
+from datetime import date
 
 @login_required
 def home(request):
@@ -30,6 +31,13 @@ def home(request):
                 Q(title__icontains=query) | Q(description__icontains=query)
             )
         tasks = tasks.order_by("-created_at")
+
+    today = date.today()
+
+    for task in tasks:
+        if task.due_date:
+            task.days_left = (task.due_date - today).days
+            task.overdue_days = abs(task.days_left)
 
     context = {
         "tasks": tasks,
