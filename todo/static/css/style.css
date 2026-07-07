@@ -1,0 +1,104 @@
+/* ========================================
+   GENERAL
+======================================== */
+
+body {
+    background-color: #f8f9fa;
+}
+
+a {
+    text-decoration: none;
+}
+
+
+/* ========================================
+   PAGE HEADER
+======================================== */
+
+.page-title {
+    font-weight: 700;
+}
+
+.page-subtitle {
+    color: #6c757d;
+}
+
+
+/* ========================================
+   CARDS
+======================================== */
+
+.page-card {
+    border: none;
+    border-radius: 12px;
+    box-shadow: 0 .125rem .25rem rgba(0,0,0,.075);
+    transition: all .25s ease;
+}
+
+.page-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 .5rem 1rem rgba(0,0,0,.15);
+}
+
+
+/* ========================================
+   DASHBOARD CARDS
+======================================== */
+
+.dashboard-card {
+    border-radius: 14px;
+}
+
+
+/* ========================================
+   TASK BADGES
+======================================== */
+
+.badge {
+    font-size: .8rem;
+}
+
+
+/* ========================================
+   BUTTONS
+======================================== */
+
+.btn {
+    border-radius: 8px;
+}
+
+
+/* ========================================
+   FORMS
+======================================== */
+
+.form-control,
+.form-select {
+    border-radius: 8px;
+}
+
+textarea {
+    resize: none;
+}
+
+
+/* ========================================
+   TASK CARD
+======================================== */
+
+.task-card {
+    margin-bottom: 1rem;
+}
+
+
+/* ========================================
+   RESPONSIVE
+======================================== */
+
+@media (max-width:768px){
+
+    .page-title{
+        font-size:1.7rem;
+    }
+
+}
